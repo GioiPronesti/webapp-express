@@ -38,6 +38,19 @@ function show(req, res) {
         error: "Resource Not Found",
         message: "Movie not found",
       });
+
+    const movie = results[0];
+
+    const sql = `SELECT * FROM movies WHERE movie_id = ?`;
+
+    connection.query(sql, [id], (err, results) => {
+      if (err) return res.status(500).json({ message: err.message });
+
+      movie.reviews = results;
+
+      // aggiungere voto medio delle recensioni
+      res.json(movie);
+    });
   });
 }
 
