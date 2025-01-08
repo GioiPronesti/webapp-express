@@ -30,6 +30,15 @@ function show(req, res) {
   const sql = `SELECT * FROM movies WHERE id = ?`;
 
   // Il secondo parametro della funzione query() diventa quindi un array, contenente i valori dei placeholder da controllare.
+
+  connection.query(sql, [id], (err, results) => {
+    if (err) return res.status(500).json({ message: err.message });
+    if (results.length === 0)
+      return res.status(404).json({
+        error: "Resource Not Found",
+        message: "Movie not found",
+      });
+  });
 }
 
 module.exports = { index, show };
