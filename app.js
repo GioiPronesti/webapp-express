@@ -9,5 +9,4 @@ app.get("/", (req, res) => {
 
 app.listen(port, () => {
   console.log("server is running");
-  res.send("server listening on port 3000!");
 });
