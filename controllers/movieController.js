@@ -11,8 +11,25 @@ function index(req, res) {
   });
 }
 
-function show() {
+function show(req, res) {
   console.log("show movie details ");
+
+  // per sapere quale film l'utente vuole ricercare devo:
+  // assicurarmi di che tipo di dato si tratta... sql injections
+  // uso gli prepared statements per controllare l'input
+
+  // console.log(req.params.id);
+  const id = req.params.id;
+
+  // aggiungere controlli di sicurezza lato sever
+
+  //if(isNaN(id))... logica controllo per middleware
+
+  // preparo la query da fornire al DB mettendo un segnaposto
+
+  const sql = `SELECT * FROM movies WHERE id = ?`;
+
+  // Il secondo parametro della funzione query() diventa quindi un array, contenente i valori dei placeholder da controllare.
 }
 
 module.exports = { index, show };
