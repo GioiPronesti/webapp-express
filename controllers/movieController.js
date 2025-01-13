@@ -1,11 +1,22 @@
 const connection = require("../data/db");
 
 function index(req, res) {
-  let sql = `SELECT * FROM movies`;
+  // recupero elenco dei film
+  let sql = `SELECT 
+                  movies.*, AVG(vote) AS avg_vote
+              FROM
+                  movies
+                      JOIN
+                  reviews ON movies.id = reviews.movie_id
+              GROUP BY movies.id`;
 
   connection.query(sql, (err, movies) => {
     console.log(err);
     if (err) return res.status(500).json({ message: err.message });
+
+    movies.forEach((movie) => {
+      movie.image = `${process.env.BE_HOST}/img/movies/${movie.image}`;
+    });
 
     res.json(movies);
   });
@@ -27,7 +38,14 @@ function show(req, res) {
 
   // preparo la query da fornire al DB mettendo un segnaposto
 
-  const sql = `SELECT * FROM movies WHERE id = ?`;
+  // 1a query sql = `SELECT * FROM movies WHERE id = ?`
+
+  const sql = `SELECT movies.*, AVG(vote) AS avg_vote
+  FROM movies
+  JOIN reviews
+  ON movies.id = reviews.movie_id
+  WHERE movies.id = ?
+  GROUP BY movies.id`;
 
   // Il secondo parametro della funzione query() diventa quindi un array, contenente i valori dei placeholder da controllare.
 
@@ -40,8 +58,9 @@ function show(req, res) {
       });
 
     const movie = results[0];
+    movie.image = `${process.env.BE_HOST}/img/movies/${movie.image}`;
 
-    const sql = `SELECT * FROM movies WHERE movie_id = ?`;
+    const sql = `SELECT * FROM reviews WHERE movie_id = ?`;
 
     connection.query(sql, [id], (err, results) => {
       if (err) return res.status(500).json({ message: err.message });
