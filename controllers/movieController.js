@@ -79,4 +79,49 @@ function show(req, res) {
   });
 }
 
-module.exports = { index, show };
+function storeReview(req, res) {
+  const id = req.params.id;
+
+  // recuperare i parametri dal body
+  const { text, vote, name } = req.body;
+
+  console.log(id, text, vote, name);
+  const intVote = parseInt(vote);
+
+  // aggiungo validazione lato server x vote e name
+
+  if (
+    !name ||
+    !intVote ||
+    isNaN(intVote) ||
+    intVote < 1 ||
+    intVote > 5 ||
+    name?.length > 255 ||
+    typeof name !== "string"
+  ) {
+    return res.status(400).json({ message: "The data is invalid" });
+  }
+
+  // procedo con inserire la query per creare una nuova recensione
+  // query INSERT INTO
+
+  const sql =
+    "INSERT INTO reviews (text, name, vote, movie_id) VALUES (?, ?, ?, ?)";
+
+  // controllo esito della query
+  // inserisco nel secondo elemento del metodo query, coiè nell' array , rispettando l'ordine  del nome delle tabelle = [1,2,3,4] cioè [text, name, vote, id] Importante!
+
+  connection.query(sql, [text, name, intVote, id], (err, results) => {
+    if (err)
+      return res.status(500).json({
+        message: "Data base query failed",
+      });
+    console.log(results);
+    res.status(201).json({
+      massage: "Review added!",
+      id: results.insertId,
+    });
+  });
+}
+
+module.exports = { index, show, storeReview };
