@@ -8,4 +8,8 @@ router.get("/", movieController.index);
 // show:  the parametric rout
 router.get("/:id", movieController.show);
 
+// store: add new review, body information data
+//api/movies/:id/reviews
+router.post("/:id/reviews", movieController.storeReview);
+
 module.exports = router;
