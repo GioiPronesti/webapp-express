@@ -7,8 +7,14 @@ function index(req, res) {
               FROM
                   movies
                       JOIN
-                  reviews ON movies.id = reviews.movie_id
-              GROUP BY movies.id`;
+                  reviews ON movies.id = reviews.movie_id`;
+
+  // BONUS: aggiungere eventuali filtri
+  if (req.query.search) {
+    sql += ` WHERE title LIKE '%${req.query.search}%' OR director LIKE '%${req.query.search}%' OR abstract LIKE '%${req.query.search}%'`;
+  }
+
+  sql += `GROUP BY movies.id`;
 
   connection.query(sql, (err, movies) => {
     console.log(err);
