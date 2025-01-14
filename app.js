@@ -12,6 +12,12 @@ app.use(
   })
 );
 
+app.use(express.json()); // middleware body parser
+
+// bonus: aggiungere middleware x validare form input
+// middleware trimmer string
+// middleware nullify empty string
+
 app.use(express.static("public"));
 
 app.get("/", (req, res) => {
